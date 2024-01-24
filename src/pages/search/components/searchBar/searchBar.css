@@ -1,0 +1,99 @@
+.searchBar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  color: var(--text-sidebar);
+  font-family: var(--font-dm-sans);
+  background-color: var(--bg-top-bar);
+  padding: 8px;
+  margin-bottom: 14px;
+}
+
+.searchBar button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text-sidebar);
+  font-family: var(--font-dm-sans);
+}
+
+.searchBar__navigation {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.searchBar__navigation .arrowLeft {
+  margin-right: 0.5rem;
+}
+
+.searchBar__navigation .arrowLeft,
+.searchBar__navigation .arrowRigth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--bg-arrow-color);
+}
+
+.searchBar__searchTerm {
+  display: flex;
+  align-items: center;
+  width: 364px;
+  height: 48px;
+  margin-left: 8px;
+  background-color: var(--bg-playlist);
+  border-radius: 500px;
+  border: 1px solid transparent;
+}
+
+.searchBar__searchTerm img {
+  width: 16px;
+  height: 16px;
+  margin: 0 10px;
+}
+
+.searchBar__searchTerm input {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  padding: 0px 100px 0 12px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  outline: none;
+}
+
+.searchBar .searchBar__login {
+  margin-left: auto;
+}
+
+.searchBar__login .signUp {
+  color: var(--text-sub);
+  font-size: 16px;
+  font-weight: 700;
+  background-color: transparent;
+  margin-right: 32px;
+}
+
+.searchBar__login .signUp:hover {
+  transform: scale(1.04);
+  color: var(--text-base-light);
+}
+
+.searchBar__login .login {
+  width: 100px;
+  height: 48px;
+  color: var(--text-base-dark);
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 40px;
+  background-color: #fff;
+}
+
+.searchBar__login .login:hover {
+  transform: scale(1.04);
+}

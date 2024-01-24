@@ -1,0 +1,16 @@
+:root {
+    /* Font family */
+    --font-dm-sans: "DM Sans", sans-serif;
+
+    /* Colors */
+    --text-base-dark: #000;
+    --text-base-light: #fff;
+    --text-sub: #a7a7a7;
+    --text-sidebar: #b3b3b3;
+
+    --bg-icon: #131313;
+    --bg-top-bar: rgba(0,0,0,.5);
+    --bg-base: #121212;
+    --bg-playlist: #242424;
+    --bg-arrow-color:rgba(0,0,0,7);
+}
