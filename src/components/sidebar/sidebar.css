@@ -5,73 +5,68 @@
   width: 300px;
   color: var(--text-sidebar);
   font-family: var(--font-dm-sans);
-  letter-spacing: .025rem;
+  letter-spacing: 0.025rem;
 }
 
-.sidebar__navigation .logo,
 .sidebar__navigation .list,
 .sidebar__library {
   background-color: var(--bg-base);
   border-radius: 8px;
-  padding: 16px 0 16px 16px;
+  padding: 16px;
   margin: 8px;
 }
 
-.sidebar__navigation .list {
-  list-style: none;
-}
-
-.sidebar__navigation .list .nav-link {
+.sidebar__navigation .nav-link {
   text-decoration: none;
   color: var(--text-sidebar);
   font-weight: 600;
+  display: flex;
+  align-items: center;
 }
 
-.sidebar__navigation .list .nav-link:hover {
+.sidebar__navigation .nav-link:hover {
   color: #fff;
 }
 
-.sidebar__navigation .list .active-nav-link {
+.sidebar__navigation .active-nav-link {
   color: #fff;
   font-weight: bold;
+}
+.sidebar__navigation .list {
+  list-style: none;
 }
 
 .sidebar__navigation .list li {
   padding: 10px 0px;
 }
 
-.sidebar .fa {
+.sidebar .textSidebar {
   font-size: 20px;
-  margin-right: 10px;
+  margin-left: 10px;
   font-weight: 300;
 }
 
-.sidebar__navigation .logo img {
-  width: 80px;
-}
-
 .sidebar__library {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .sidebar__library button {
-  margin-right: 10px;
   color: var(--text-sidebar);
   background-color: transparent;
   border: 0px;
   font-size: 1rem;
   font-weight: 700;
   font-family: var(--font-dm-sans);
-  letter-spacing: .025rem;
-  text-align: center;
+  letter-spacing: 0.025rem;
   text-decoration: none;
   text-transform: none;
-  padding: 20px 0px;
+  padding: 10px 0px;
   display: flex;
+  align-items: center;
 }
 
 .sidebar__library .fa-plus {
-    margin-left: 10px;
+  margin-left: 10px;
 }

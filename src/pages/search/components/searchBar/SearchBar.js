@@ -28,13 +28,16 @@ export default function SearchBar() {
             </div>
 
             <div className='searchBar__searchTerm'>
-                <img src={searchIcon} alt='' />
-                <input type='text' placeholder='What do you want to hear?'/>
+                <input type='text' placeholder='What do you want to listen to?'/>
+                <button type='submit'>
+                    <img src={searchIcon} alt='Search' />
+                </button>
+                
             </div>
 
             <div className='searchBar__login'>
                 <button className='signUp'>Sign up</button>
-                <button className='login'>Login</button>                
+                <button className='login'>Log in</button>                
             </div>
 
         </div>

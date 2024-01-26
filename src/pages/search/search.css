@@ -1,7 +1,7 @@
 .searchPage {
   color: #fff;
   background-color: var(--bg-base);
-  position: fixed;
+  position: relative;
   left: 300px;
   width: 70%;
   height: 100vh;

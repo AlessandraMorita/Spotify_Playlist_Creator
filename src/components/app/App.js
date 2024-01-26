@@ -22,17 +22,6 @@ function App() {
           </Route>
         ))} />
 
-    // <div className="App">
-    //   <header className="App-header">
-    //     <h1>Playlist Creator - Spotify</h1>
-    //   </header>
-    //   <main>
-    //     <h2>Let's create!</h2>
-    //     <Sidebar />
-    //     <SearchBar />
-    //     <Playlist />
-    //     <SearchResults />
-    //   </main>
     //   <footer>
     //     <ul>
     //       <li>About Me</li>
@@ -40,7 +29,6 @@ function App() {
     //       <li>Projects</li>
     //     </ul>
     //   </footer>
-    // </div>
   );
 }
 
