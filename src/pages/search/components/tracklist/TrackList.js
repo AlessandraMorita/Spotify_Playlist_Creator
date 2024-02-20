@@ -4,7 +4,7 @@ import Track from "../track/Track";
 
 export default function TrackList({ isRemoval, trackList, trackAktion }) {
   return (
-    <div>
+    <div className="trackList">
       {trackList.map((track) => {
         return (
           <Track

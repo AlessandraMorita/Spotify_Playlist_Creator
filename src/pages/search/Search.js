@@ -3,27 +3,37 @@ import React, { useState } from "react";
 import SearchBar from "./components/searchBar/SearchBar";
 import SearchResults from "./components/searchResults/SearchResults";
 import Playlist from "../../components/playlist/Playlist";
+import { data } from "../../data";
+import { Spotify } from "../../components/Spotify";
 
 export default function Search() {
-  const test = [
-      { id: 1, artist: "Foo Fighters", album: "Rock", name: "Music 1" },
-      { id: 2, artist: "Michael Jackson", album: "Pop", name: "Music 2" },
-      { id: 3, artist: "Emicida", album: "Hip Hop", name: "Music 3" },
-      {
-        id: 4,
-        artist: "Chitãozinho e Xororó",
-        album: "Sertanejo",
-        name: "Music 4",
-      },
-      { id: 5, artist: "Mc Coringa", album: "Funk", name: "Music 5" },
-      { id: 6, artist: "Arlindo Cruz", album: "Samba", name: "Music 6" },
-      { id: 7, artist: "Caetano Veloso", album: "MPB", name: "Music 7" },
-    ];
-
   const [playlistName, setPlaylistName] = useState("");
+  const [playlistURIs, setPlaylistURIs] = useState([]);
   const [playlistTrackList, setPlaylistTrackList] = useState([]);
-  const [searchResultList, setSearchResultList] = useState(test);
+  const [searchInput, setSearchInput] = useState("");
+  const [searchResultList, setSearchResultList] = useState([]);
   const trackAktion = { addTrack, removeTrack };
+
+  function handleLogin() {
+    Spotify.redirectToSpotifyAuthorize();
+  }
+
+  function handleSearchInput(input) {
+    setSearchInput(input);
+  }
+
+  async function search() {
+    const accessToken = window.localStorage.getItem("access_token");
+
+    if (!accessToken) {
+      handleLogin();
+    }
+
+    if (searchInput) {
+      const searchResults = await Spotify.search(searchInput);
+      setSearchResultList(searchResults.tracks["items"]);
+    }
+  }
 
   function handleNameChange(name) {
     setPlaylistName(name);
@@ -32,10 +42,10 @@ export default function Search() {
   function addTrack(track, isRemoval) {
     if (isRemoval) {
       setSearchResultList((prevState) => [...prevState, track]);
-
     } else {
       setPlaylistTrackList((prevState) => [...prevState, track]);
       removeTrack(track, isRemoval);
+      setPlaylistURIs((prevState) => [...prevState, track.uri]);
     }
   }
 
@@ -44,10 +54,9 @@ export default function Search() {
       const updatedPlaylist = playlistTrackList.filter((elem) => {
         return elem.id !== track.id;
       });
-      
+
       setPlaylistTrackList(updatedPlaylist);
       addTrack(track, isRemoval);
-
     } else {
       const updatedSearchList = searchResultList.filter((elem) => {
         return elem.id !== track.id;
@@ -59,11 +68,12 @@ export default function Search() {
 
   return (
     <div className="searchPage">
-      <SearchBar />
-      <SearchResults
-        trackList={searchResultList}
-        trackAktion={trackAktion}
+      <SearchBar
+        handleLogin={handleLogin}
+        search={search}
+        searchInput={handleSearchInput}
       />
+      <SearchResults trackList={searchResultList} trackAktion={trackAktion} />
       <Playlist
         trackList={playlistTrackList}
         handleNameChange={handleNameChange}

@@ -1,5 +1,5 @@
 import "./track.css";
-import React, { useState } from "react";
+import React from "react";
 
 export default function Track({ isRemoval, track, trackAktion }) {
   const { addTrack, removeTrack } = trackAktion;
@@ -31,10 +31,10 @@ export default function Track({ isRemoval, track, trackAktion }) {
   return (
     <div className="track">
       <div className="track-information">
-        <h2>{track.name}</h2>
-        <h3>
-          {track.artist} | {track.album}
-        </h3>
+        <h3>{track.name}</h3>
+        <p>
+          {track.artists[0].name} | {track.album.name}
+        </p>
       </div>
       {renderAction()}
     </div>

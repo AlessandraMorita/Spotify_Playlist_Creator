@@ -4,8 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import arrowLeft from '../../../../assets/icons/small-left.png';
 import arrowRigth from '../../../../assets/icons/small-right.png';
 import searchIcon from '../../../../assets/icons/search.png';
+import { Spotify } from '../../../../components/Spotify';
 
-export default function SearchBar() {
+export default function SearchBar({ handleLogin, search, searchInput }) {
     const navigate = useNavigate();
 
     function goBack() {
@@ -14,6 +15,17 @@ export default function SearchBar() {
 
     function goForward() {
         navigate(1);
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        search();
+    }
+
+    function handleKeyDown(event) {
+        if(event.key === 'Enter') {
+            handleSubmit(event);
+        };
     }
 
     return (
@@ -28,8 +40,8 @@ export default function SearchBar() {
             </div>
 
             <div className='searchBar__searchTerm'>
-                <input type='text' placeholder='What do you want to listen to?'/>
-                <button type='submit'>
+                <input type='text' placeholder='What do you want to listen to?' onChange={ (event) => { searchInput(event.target.value) } } onKeyDown={ handleKeyDown }/>
+                <button type='submit' onClick={handleSubmit} >
                     <img src={searchIcon} alt='Search' />
                 </button>
                 
@@ -37,7 +49,7 @@ export default function SearchBar() {
 
             <div className='searchBar__login'>
                 <button className='signUp'>Sign up</button>
-                <button className='login'>Log in</button>                
+                <button className='login' onClick={ handleLogin }>Log in</button>                
             </div>
 
         </div>

@@ -10,18 +10,22 @@ export default function Playlist({ trackList, handleNameChange, trackAktion }) {
   function handleOnSubmit() {}
 
   return (
-    <div>
+    <div className="playlist">
       <input
         id="playlistName"
         placeholder="New Playlist Name"
         onChange={handleOnChange}
       />
+
       <TrackList
         trackList={trackList}
         trackAktion={trackAktion}
         isRemoval={true}
       />
-      <button onSubmit={handleOnSubmit()}>Save to Spotify</button>
+
+      <button className="saveOnSpotify" onSubmit={handleOnSubmit()}>
+        Save to Spotify
+      </button>
     </div>
   );
 }

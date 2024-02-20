@@ -1,8 +1,9 @@
 .track {
   display: flex;
+  justify-content: space-around;
   align-items: center;
+  width: 100%;
   border-bottom: 1px solid rgba(256, 256, 256, 0.8);
-  width: 50%;
 }
 
 .track-action {
@@ -23,11 +24,12 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   height: 72px;
 }
 
 .track-information h3 {
+  font-size: 1.125rem;
   margin-bottom: 0.22rem;
 }
 

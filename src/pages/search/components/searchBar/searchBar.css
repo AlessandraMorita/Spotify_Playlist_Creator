@@ -1,12 +1,14 @@
 .searchBar {
+  grid-area: 1 / 1 / span 1 / span 2 ;
+  position: fixed;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   color: var(--text-sidebar);
-  font-family: var(--font-dm-sans);
   background-color: var(--bg-top-bar);
   padding: 8px;
   margin-bottom: 14px;
+  width: 70%;
 }
 
 .searchBar button {
@@ -14,7 +16,6 @@
   border: none;
   cursor: pointer;
   color: var(--text-sidebar);
-  font-family: var(--font-dm-sans);
 }
 
 .searchBar__navigation {
@@ -59,6 +60,7 @@
 
 .searchBar__searchTerm input {
   background-color: transparent;
+  min-width: 13rem;
   border: none;
   color: #fff;
   padding: 0px 100px 0 12px;
