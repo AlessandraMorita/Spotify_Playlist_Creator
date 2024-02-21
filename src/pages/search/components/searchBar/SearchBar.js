@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import arrowLeft from '../../../../assets/icons/small-left.png';
 import arrowRigth from '../../../../assets/icons/small-right.png';
 import searchIcon from '../../../../assets/icons/search.png';
-import { Spotify } from '../../../../components/Spotify';
 
 export default function SearchBar({ handleLogin, search, searchInput }) {
     const navigate = useNavigate();

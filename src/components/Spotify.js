@@ -4,7 +4,7 @@ const scope =
   "playlist-modify-public playlist-modify-private user-read-private user-read-email";
 
 // Data structure that manages the current active token, caching it in localStorage
-const currentToken = {
+export const currentToken = {
   access_token() {
     return window.localStorage.getItem("access_token") || null;
   },
@@ -151,11 +151,33 @@ export const Spotify = {
     }
   },
 
+  async getCurrentUsersProfile() {
+    await this.getRefreshToken();
+    const accessToken = currentToken.access_token();
+    const getCurrentUsersProfile = "https://api.spotify.com/v1/me";
+
+    try {
+      const response = await fetch(getCurrentUsersProfile, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        return jsonResponse;
+      }
+      throw new Error("Users Profile request failed!");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   async search(input) {
     const type = "album,artist,track";
     await this.getRefreshToken();
-    const accessToken = window.localStorage.getItem("access_token");
-    const limit = 15;
+    const accessToken = currentToken.access_token();
+    const limit = 10;
 
     let url = "https://api.spotify.com/v1/search?";
     url += "q=" + input;
@@ -176,6 +198,66 @@ export const Spotify = {
       }
 
       throw new Error("Search request failed!");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async createPlaylist(name) {
+    await this.getRefreshToken();
+    const accessToken = currentToken.access_token();
+
+    const userProfile = await this.getCurrentUsersProfile();
+    const userId = userProfile.id;
+    const createPlaylistEndpoint = `https://api.spotify.com/v1/users/${userId}/playlists`;
+    try {
+      const response = await fetch(createPlaylistEndpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: name,
+          description: "description",
+          public: false,
+        }),
+      });
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        return jsonResponse;
+      }
+      throw new Error("Create Playlist request failed!");
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  async addItems(name, urisArray) {
+    // Add Items to Playlist
+    const playlistData = await this.createPlaylist(name);
+    const playlistId = playlistData.id;
+    const addItemsToPlaylistEndpoint = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+
+    const accessToken = currentToken.access_token();
+
+    try {
+      const response = await fetch(addItemsToPlaylistEndpoint, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          uris: urisArray,
+          position: 0,
+        }),
+      });
+
+      if (response.ok) {
+        return;
+      }
+      throw new Error("Add Items to Playlist request failed!");
     } catch (error) {
       console.log(error);
     }

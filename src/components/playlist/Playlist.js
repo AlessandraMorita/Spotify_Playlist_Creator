@@ -1,13 +1,16 @@
 import "./playlist.css";
-import React, { useState } from "react";
+import React from "react";
 import TrackList from "../../pages/search/components/tracklist/TrackList";
 
-export default function Playlist({ trackList, handleNameChange, trackAktion }) {
-  function handleOnChange(e) {
-    handleNameChange(e.target.value);
+export default function Playlist({ trackList, handleNameChange, trackAktion, savePlaylist }) {
+  function handleOnChange(event) {
+    handleNameChange(event.target.value);
   }
 
-  function handleOnSubmit() {}
+  function handleOnSubmit(event) {
+    event.preventDefault()
+    savePlaylist();
+  }
 
   return (
     <div className="playlist">
@@ -23,7 +26,7 @@ export default function Playlist({ trackList, handleNameChange, trackAktion }) {
         isRemoval={true}
       />
 
-      <button className="saveOnSpotify" onSubmit={handleOnSubmit()}>
+      <button className="saveOnSpotify" onClick={handleOnSubmit}>
         Save to Spotify
       </button>
     </div>

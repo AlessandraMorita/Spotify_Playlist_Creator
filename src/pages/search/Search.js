@@ -5,9 +5,10 @@ import SearchResults from "./components/searchResults/SearchResults";
 import Playlist from "../../components/playlist/Playlist";
 import { data } from "../../data";
 import { Spotify } from "../../components/Spotify";
+import { currentToken } from "../../components/Spotify";
 
 export default function Search() {
-  const [playlistName, setPlaylistName] = useState("");
+  const [playlistName, setPlaylistName] = useState("New Playlist");
   const [playlistURIs, setPlaylistURIs] = useState([]);
   const [playlistTrackList, setPlaylistTrackList] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -23,7 +24,7 @@ export default function Search() {
   }
 
   async function search() {
-    const accessToken = window.localStorage.getItem("access_token");
+    const accessToken = currentToken.access_token();
 
     if (!accessToken) {
       handleLogin();
@@ -40,6 +41,12 @@ export default function Search() {
 
   function handleNameChange(name) {
     setPlaylistName(name);
+  }
+
+  function savePlaylist() {
+    if (playlistTrackList.length > 0) {
+      Spotify.addItems(playlistName, playlistURIs);
+    }
   }
 
   function addTrack(track, isRemoval) {
@@ -80,6 +87,7 @@ export default function Search() {
       <Playlist
         trackList={playlistTrackList}
         handleNameChange={handleNameChange}
+        savePlaylist={savePlaylist}
         trackAktion={trackAktion}
       />
     </div>
