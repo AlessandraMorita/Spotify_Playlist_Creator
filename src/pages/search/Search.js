@@ -50,16 +50,33 @@ export default function Search() {
   }
 
   function addTrack(track, isRemoval) {
+    // If isRemoval, the track is in the playlistTrackList and can be removed. When removed, it's added to searchResultList
+    // Else, the track is in the searchResultList and can be added to the playlistTrackList. When added, it's removed from searchResultList
     if (isRemoval) {
-      setSearchResultList((prevState) => [...prevState, track]);
+      const isTrackAddedToSearchResultList = searchResultList.some((elem) => {
+        return track.id === elem.id;
+      });
+
+      if (!isTrackAddedToSearchResultList) {
+        setSearchResultList((prevState) => [...prevState, track]);
+      }
     } else {
-      setPlaylistTrackList((prevState) => [...prevState, track]);
+      const isTrackAddedToPlaylist = playlistTrackList.some((elem) => {
+        return track.id === elem.id;
+      });
+
+      if (!isTrackAddedToPlaylist) {
+        setPlaylistTrackList((prevState) => [...prevState, track]);
+        setPlaylistURIs((prevState) => [...prevState, track.uri]);
+      }
+
       removeTrack(track, isRemoval);
-      setPlaylistURIs((prevState) => [...prevState, track.uri]);
     }
   }
 
   function removeTrack(track, isRemoval) {
+    // If isRemoval, the track is in the playlistTrackList and can be removed. When removed, it's added to searchResultList
+    // Else, the track is in the searchResultList and can be added to the playlistTrackList. When added, it's removed from searchResultList
     if (isRemoval) {
       const updatedPlaylist = playlistTrackList.filter((elem) => {
         return elem.id !== track.id;
