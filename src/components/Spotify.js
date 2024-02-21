@@ -1,13 +1,52 @@
 const clientId = "77cb974381b54455862c9dc7d5293809";
 const redirectUri = "http://localhost:3000/search";
-const authorizationEndpoint = "https://accounts.spotify.com/authorize";
-const tokenEndpoint = "https://accounts.spotify.com/api/token";
-const scope = "playlist-modify-public playlist-modify-private";
+const scope =
+  "playlist-modify-public playlist-modify-private user-read-private user-read-email";
+
+// Data structure that manages the current active token, caching it in localStorage
+const currentToken = {
+  access_token() {
+    return window.localStorage.getItem("access_token") || null;
+  },
+
+  refresh_token() {
+    return window.localStorage.getItem("refresh_token") || null;
+  },
+
+  expires_in() {
+    return window.localStorage.getItem("expires_in") || null;
+  },
+
+  expires() {
+    return window.localStorage.getItem("expires") || null;
+  },
+
+  save(response) {
+    const { access_token, refresh_token, expires_in } = response;
+    window.localStorage.setItem("access_token", access_token);
+    window.localStorage.setItem("refresh_token", refresh_token);
+    window.localStorage.setItem("expires_in", expires_in);
+
+    const now = new Date();
+    const expiry = new Date(now.getTime() + expires_in * 1000);
+    window.localStorage.setItem("expires", expiry);
+
+    console.log("access_token: ", window.localStorage.getItem("access_token"));
+    console.log(
+      "refresh_token: ",
+      window.localStorage.getItem("refresh_token")
+    );
+    console.log("expires_in: ", window.localStorage.getItem("expires_in"));
+    console.log("expires: ", window.localStorage.getItem("expires"));
+  },
+};
 
 // Authorization Code with PKCE Flow
 
 export const Spotify = {
   async redirectToSpotifyAuthorize() {
+    const authorizationEndpoint = "https://accounts.spotify.com/authorize";
+
     const generateRandomString = (length) => {
       const possible =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -50,28 +89,71 @@ export const Spotify = {
 
   async getToken(code) {
     const code_verifier = localStorage.getItem("code_verifier");
+    const tokenEndpoint = "https://accounts.spotify.com/api/token";
 
-    const payload = {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: clientId,
-        grant_type: "authorization_code",
-        code: code,
-        redirect_uri: redirectUri,
-        code_verifier: code_verifier,
-      }),
-    };
+    try {
+      const response = await fetch(tokenEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          client_id: clientId,
+          grant_type: "authorization_code",
+          code: code,
+          redirect_uri: redirectUri,
+          code_verifier: code_verifier,
+        }),
+      });
 
-    const response = await fetch(tokenEndpoint, payload);
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  },
 
-    return await response.json();
+  async getRefreshToken() {
+    const now = new Date();
+    const currentDate = now.getTime();
+
+    const expiresDate = new Date(currentToken.expires());
+    const expiresDateMs = expiresDate.getTime();
+
+    // if previously stored token is not expired, return
+    if (currentDate < expiresDateMs) {
+      return;
+    } else {
+      // if previously stored token is expired, refresh token
+      const getRefreshTokenEndpoint = "https://accounts.spotify.com/api/token";
+
+      try {
+        const response = await fetch(getRefreshTokenEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            client_id: clientId,
+            grant_type: "refresh_token",
+            refresh_token: currentToken.refresh_token(),
+          }),
+        });
+
+        if (response.ok) {
+          const jsonResponse = await response.json();
+          currentToken.save(jsonResponse);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 
   async search(input) {
     const type = "album,artist,track";
+    await this.getRefreshToken();
     const accessToken = window.localStorage.getItem("access_token");
     const limit = 15;
 
@@ -84,7 +166,7 @@ export const Spotify = {
       const response = await fetch(url, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${accessToken}`
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -100,57 +182,19 @@ export const Spotify = {
   },
 };
 
-// Data structure that manages the current active token, caching it in localStorage
-const currentToken = {
-    access_token() {
-      return window.localStorage.getItem("access_token") || null;
-    },
-  
-    refresh_token() {
-      return window.localStorage.getItem("refresh_token") || null;
-    },
-  
-    expires_in() {
-      return window.localStorage.getItem("refresh_in") || null;
-    },
-  
-    expires() {
-      return window.localStorage.getItem("expires") || null;
-    },
-  
-    save(response) {
-      const { access_token, refresh_token, expires_in } = response;
-      window.localStorage.setItem("access_token", access_token);
-      window.localStorage.setItem("refresh_token", refresh_token);
-      window.localStorage.setItem("expires_in", expires_in);
-  
-      const now = new Date();
-      const expiry = new Date(now.getTime() + expires_in * 1000);
-      window.localStorage.setItem("expires", expiry);
-  
-      console.log("access_token: ", window.localStorage.getItem("access_token"));
-      console.log(
-        "refresh_token: ",
-        window.localStorage.getItem("refresh_token")
-      );
-      console.log("expires_in: ", window.localStorage.getItem("expires_in"));
-      console.log("expires: ", window.localStorage.getItem("expires"));
-    },
-  };
-  
-  // On page load, try to fetch auth code from current browser search URL
-  const args = new URLSearchParams(window.location.search);
-  const code = args.get('code');
-  
-  // If we find a code, we're in a callback, do a token exchange
-  if (code) {
-    const token = await Spotify.getToken(code);
-    currentToken.save(token);
-  
-    // Remove code from URL so we can refresh correctly.
-    const url = new URL(window.location.href);
-    url.searchParams.delete("code");
-  
-    const updatedUrl = url.search ? url.href : url.href.replace('?', '');
-    window.history.replaceState({}, document.title, updatedUrl);
-  }
+// On page load, try to fetch auth code from current browser search URL
+const args = new URLSearchParams(window.location.search);
+const code = args.get("code");
+
+// If we find a code, we're in a callback, do a token exchange
+if (code) {
+  const token = await Spotify.getToken(code);
+  currentToken.save(token);
+
+  // Remove code from URL so we can refresh correctly.
+  const url = new URL(window.location.href);
+  url.searchParams.delete("code");
+
+  const updatedUrl = url.search ? url.href : url.href.replace("?", "");
+  window.history.replaceState({}, document.title, updatedUrl);
+}

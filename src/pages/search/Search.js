@@ -27,11 +27,14 @@ export default function Search() {
 
     if (!accessToken) {
       handleLogin();
-    }
+    } else {
+      if (searchInput) {
+        const searchResults = await Spotify.search(searchInput);
 
-    if (searchInput) {
-      const searchResults = await Spotify.search(searchInput);
-      setSearchResultList(searchResults.tracks["items"]);
+        if (searchResults) {
+          setSearchResultList(searchResults.tracks["items"]);
+        }
+      }
     }
   }
 
